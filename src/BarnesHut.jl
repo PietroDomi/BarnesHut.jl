@@ -9,4 +9,5 @@ include("utils.jl");
 include("quadtree.jl");
 include("bruteforce.jl");
 
+println("Building successful")
 end # module

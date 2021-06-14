@@ -1,6 +1,6 @@
-using Parameters
+# using Parameters
 
-@with_kw mutable struct Node2D
+Base.@kwdef mutable struct Node2D
     parent = nothing
     children = Dict{String,Union{Nothing,Node2D}}([("nw",nothing),
                                                    ("ne",nothing),
