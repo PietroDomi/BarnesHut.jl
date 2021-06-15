@@ -3,24 +3,26 @@
 #     push!(LOAD_PATH,"C:/Users/PietroDomi/OneDrive - Università Commerciale Luigi Bocconi/Documenti/GitHub/barnes-hut-julia")
 # end
 
-# using Plots
+using Plots
 # using BenchmarkTools
-# using BHNbody
+using BarnesHut
 
 println("Starting Single Galaxy simulation")
 
 N = 500
 T = 24*365
 # const plotLimits = nothing
-plotLimits = [-10.,10.]
+plotLimits = [-20.,20.]
 fps = 60
 
 galaxy = galaxy_start(N,[0.,0.],[0.,0.],10.)
 
-display(BHNbody.viewStart(galaxy))
+# display(BHNbody.viewStart(galaxy))
 
 gal_hist = simulationTree(galaxy,T,3600.,0.5,false)
 
-anim_tree = build_animation(gal_hist,plotLimits,plotLimits,6)
+anim_tree = build_animation(gal_hist,plotLimits,plotLimits,24)
 
-gif(anim_tree, "gifs/galaxy-$N-tree-$T-$fps-fps.gif", fps=fps)
+println("Animation computed.\nBuilding gif...")
+
+gif(anim_tree, "gifs/galaxy-tree-$N-$T-$fps-fps.gif", fps=fps)
