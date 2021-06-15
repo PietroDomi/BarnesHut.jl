@@ -11,8 +11,8 @@ Plots.GRBackend()
 println("Starting Earth-Sun simulation")
 
 const T = 24*365
-const plotLimits = nothing
-# const plotLimits = [-20.,20.]
+# const plotLimits = nothing
+const plotLimits = [-20.,20.]
 const fps = 60
 
 points = Star[]
@@ -24,4 +24,4 @@ es_anim = build_animation(es_hist,plotLimits,plotLimits,24)
 
 println("Animation computed.\nBuilding gif...")
 
-gif(es_anim, "gifs/earthsun-$T-$fps-fps.gif", fps=fps)
+gif(es_anim, "gifs/earthsun-brute-$T-$fps-fps.gif", fps=fps)
