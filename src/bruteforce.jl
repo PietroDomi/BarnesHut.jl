@@ -46,10 +46,10 @@ function simulationBrute(stars,time,step)
     history = [position]
     stars_ = copy(stars)
     println("Beginning brute force simulation...")
-    for t in 1:time # one month's minutes
+    for t in tqdm(1:time) # one month's minutes
         stars_ = onestepBrute(step,stars_,10^10)
         if t % (time÷10) == 1
-            println("$t out of $time")
+            # println("$t out of $time")
         end
         position = zeros(length(stars_),2)
         for i in 1:length(stars_)

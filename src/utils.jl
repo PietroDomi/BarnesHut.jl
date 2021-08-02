@@ -1,6 +1,7 @@
 import Base.-
 using LinearAlgebra
 using Plots
+using ProgressBars
 
 mutable struct Star
     s::Array{Float64,1} # * 10^10
@@ -74,10 +75,10 @@ end
 function build_animation(history::Array{Array{Float64,2},1},x_lim::Union{Nothing,Array{Float64,1}},y_lim::Union{Nothing,Array{Float64,1}},df::Int64)
     println("Building Animation...")
     T = length(history)
-    anim = @animate for t = 1:df:T
+    anim = @animate for t = tqdm(1:df:T)
         if t % (T÷20) == 1
             p = t*100 ÷ T
-            println("$p %")
+            # println("$p %")
         end
         scatter(history[t][:,1], history[t][:,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim)
     end

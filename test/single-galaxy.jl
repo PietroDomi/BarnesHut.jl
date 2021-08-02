@@ -25,4 +25,4 @@ anim_tree = build_animation(gal_hist,plotLimits,plotLimits,24)
 
 println("Animation computed.\nBuilding gif...")
 
-gif(anim_tree, "gifs/galaxy-tree-$N-$T-$fps-fps.gif", fps=fps)
+gif(anim_tree, "gifs/galaxy-tree-n$N-t$T-fps$fps.gif", fps=fps)

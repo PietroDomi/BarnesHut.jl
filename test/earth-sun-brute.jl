@@ -24,4 +24,4 @@ es_anim = build_animation(es_hist,plotLimits,plotLimits,24)
 
 println("Animation computed.\nBuilding gif...")
 
-gif(es_anim, "gifs/earthsun-brute-$T-$fps-fps.gif", fps=fps)
+gif(es_anim, "gifs/earthsun-brute-t$T-fps$fps.gif", fps=fps)

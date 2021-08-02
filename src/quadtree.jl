@@ -190,10 +190,10 @@ function simulationTree(stars::Array{Star,1},time::Int64,delta::Float64,theta::F
     history = [position]
     stars_ = copy(stars)
     println("Beginning BH simulation...")
-    for t in 1:time 
+    for t in tqdm(1:time) 
         stars_ = oneStepTree(stars_,delta,theta,10^10,1.)
         if t % (time÷20) == 1
-            println("$t out of $time")
+            # println("$t out of $time")
         end
         position = zeros(length(stars_),2)
         for i in 1:length(stars_)
