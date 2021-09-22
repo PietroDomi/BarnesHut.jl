@@ -80,7 +80,7 @@ function build_animation(history::Array{Array{Float64,2},1},x_lim::Union{Nothing
             p = t*100 ÷ T
             # println("$p %")
         end
-        scatter(history[t][:,1], history[t][:,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim)
+        scatter(history[t][:,1], history[t][:,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim);
     end
     println("Done!")
     return anim

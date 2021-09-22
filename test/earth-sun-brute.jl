@@ -18,10 +18,10 @@ const fps = 60
 points = Star[]
 BarnesHut.addEarthSun(points,[0.,0.])
 
-es_hist = simulationBrute(points,T,3600.)
+es_hist = simulationBrute(points,T,3600.);
 
-es_anim = build_animation(es_hist,plotLimits,plotLimits,24)
+es_anim = build_animation(es_hist,plotLimits,plotLimits,24);
 
 println("Animation computed.\nBuilding gif...")
 
-gif(es_anim, "gifs/earthsun-brute-t$T-fps$fps.gif", fps=fps)
+gif(es_anim, "gifs/earthsun-brute-t$T-fps$fps.gif", fps=fps);
