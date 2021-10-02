@@ -2,12 +2,16 @@ import Base.-
 using LinearAlgebra
 using Plots
 using ProgressBars
+using Random
 
 mutable struct Star
     s::Array{Float64,1} # * 10^10
     v::Array{Float64,1}
     m::Float64 # times 10^20
+    Star(s,v,m) = new(s,v,m)
 end
+
+Star() = Star([0.,0.],[0.,0.],0.)
 
 distance2(a::Star,b::Star) = (a.s[1]-b.s[1])^2+(a.s[2]-b.s[2])^2
 
@@ -21,11 +25,16 @@ end
 
 -(a::Star,b::Star) = [a.s[1]-b.s[1],a.s[2]-b.s[2]]
 
-function newton(a::Star,b::Star)
+function newton(a::Star,b::Star,ϵ::Float64=0.1)
     G = 6.674
     r2 = distance2(a,b)
+    # if sqrt(r2) < ϵ
+    #     println("Collapsed!")
+    #     return 0., collapse(a,b)
+    # else
     F = G * a.m * b.m / r2 # * 10^9
-    return F
+    return F # , nothing
+    # end
 end
 
 function get_cos_sin(a::Array)
@@ -59,7 +68,7 @@ function galaxy_start(num::Int64,center::Array{Float64,1},c_vel::Array{Float64,1
     stars = Star[]
     for i in 1:num
         θ = rand()*2*π
-        R = abs(randn()*maxR/2) + maxR/3
+        R = abs(randn()*maxR/2) + maxR/2
         pos = center + [R*cos(θ),R*sin(θ)]
         vel = [sin(θ),-cos(θ)]*29791.032 + c_vel
         append!(stars,[Star(pos,vel,6*10^4)])
@@ -86,13 +95,28 @@ function build_animation(history::Array{Array{Float64,2},1},x_lim::Union{Nothing
     return anim
 end
 
-function moveStar(force::Array{Float64,1},star::Star,time::Float64,spaceScale::Int64)
-    a = force / star.m * 10^-11 # m/s^2
-    v_x = a[1] * time + star.v[1]
-    v_y = a[2] * time + star.v[2]
-    s_x = a[1]/2 * time^2 + star.v[1] * time + star.s[1] * spaceScale # m
-    s_y = a[2]/2 * time^2 + star.v[2] * time + star.s[2] * spaceScale # m 
-    Star([s_x,s_y]/spaceScale,[v_x,v_y],star.m)
+function moveStar(force::Array{Float64,1},star::Star,time::Float64,spaceScale::Int64;sun::Bool=false)
+    if sun
+        return star
+    else
+        a = force / star.m * 10^-11 # m/s^2
+        v_x = a[1] * time + star.v[1]
+        v_y = a[2] * time + star.v[2]
+        s_x = a[1]/2 * time^2 + star.v[1] * time + star.s[1] * spaceScale # m
+        s_y = a[2]/2 * time^2 + star.v[2] * time + star.s[2] * spaceScale # m 
+        return Star([s_x,s_y]/spaceScale,[v_x,v_y],star.m)
+    end
+end
+
+function collapse(star1::Star,star2::Star)
+    if star2.m >= star1.m
+        S = star1.s
+        V = star1.v
+    end
+    S = star1.m >= star2.m ? star1.s : star2.s
+    V = star1.m >= star2.m ? star1.v : star2.v
+    M = star1.m + star2.m
+    Star(S,V,M)
 end
 
 function mergeStarArrays(array1::Array{Star,1},array2::Array{Star,1},addEarthSun::Bool)
