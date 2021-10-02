@@ -1,8 +1,9 @@
 import Base.-
 using LinearAlgebra
-using Plots
 using ProgressBars
 using Random
+
+import Plots: scatter, scatter!
 
 mutable struct Star
     s::Array{Float64,1} # * 10^10
@@ -25,14 +26,14 @@ end
 
 -(a::Star,b::Star) = [a.s[1]-b.s[1],a.s[2]-b.s[2]]
 
-function newton(a::Star,b::Star,ϵ::Float64=0.1)
+function newton(a::Star,b::Star;max::Float64=1e18)
     G = 6.674
     r2 = distance2(a,b)
     # if sqrt(r2) < ϵ
     #     println("Collapsed!")
     #     return 0., collapse(a,b)
     # else
-    F = G * a.m * b.m / r2 # * 10^9
+    F = min(G * a.m * b.m / r2, max)  # * 10^9
     return F # , nothing
     # end
 end
@@ -81,7 +82,7 @@ function mean(a::Number,b::Number)
     (b+a)/2
 end
 
-function build_animation(history::Array{Array{Float64,2},1},x_lim::Union{Nothing,Array{Float64,1}},y_lim::Union{Nothing,Array{Float64,1}},df::Int64)
+function build_animation(history::Array{Array{Float64,2},1},x_lim::Union{Nothing,Array{Float64,1}},y_lim::Union{Nothing,Array{Float64,1}},df::Int64;clash::Bool=false,N::Int=10)
     println("Building Animation...")
     T = length(history)
     anim = @animate for t = tqdm(1:df:T)
@@ -89,7 +90,12 @@ function build_animation(history::Array{Array{Float64,2},1},x_lim::Union{Nothing
             p = t*100 ÷ T
             # println("$p %")
         end
-        scatter(history[t][:,1], history[t][:,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim);
+        if ! clash
+            scatter(history[t][:,1], history[t][:,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim)
+        else
+            scatter(history[t][1:N+2,1], history[t][1:N+2,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim)
+            scatter!(history[t][N+2:end,1], history[t][N+2:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:orange)
+        end
     end
     println("Done!")
     return anim

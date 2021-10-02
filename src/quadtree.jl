@@ -186,7 +186,7 @@ function oneStepTree(stars::Array{Star,1},delta::Float64,theta::Float64,spaceSca
 #     println("Moving stars")
     for i in 1:length(stars)
         #TODO: this could be improved exploiting matrix multiplications
-         new_stars[i] = moveStar(F[i,:],stars[i],delta,spaceScale, sun = stars[i].s == [0.,0.] ? true : false)
+         new_stars[i] = moveStar(F[i,:],stars[i],delta,spaceScale)
     end
     return new_stars, f
 end
