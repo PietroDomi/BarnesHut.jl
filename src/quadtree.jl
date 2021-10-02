@@ -184,6 +184,18 @@ function oneStepTree(stars::Array{Star,1},delta::Float64,theta::Float64,spaceSca
     F, f = forcesVector(root,theta)
     new_stars = copy(stars)
 #     println("Moving stars")
+
+    # TENTATIVE MAT MUL (need to rethink whole Star struct)
+    # masses = [s.m for s in stars]
+    # acc = F ./ masses
+    # vel_vv = [s.v for s in stars]
+    # vel = zeros(Float64,length(stars),2)
+    # for i in 1:length(stars), j in 1:2
+    #     vel[i,j] = vel_vv[i][j]
+    # end
+    # vel = acc * delta + vel
+
+
     for i in 1:length(stars)
         #TODO: this could be improved exploiting matrix multiplications
          new_stars[i] = moveStar(F[i,:],stars[i],delta,spaceScale, sun = stars[i].s == [0.,0.] ? true : false)
