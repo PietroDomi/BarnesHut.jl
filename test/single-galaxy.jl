@@ -10,12 +10,14 @@ using BarnesHut
 println("Starting Single Galaxy simulation")
 
 N = 500
-T = 24*365
+T = 24*30*12
 # const plotLimits = nothing
-plotLimits = [-20.,20.]
+plotLimits = [-20.,40.]
 fps = 60
 
-galaxy = galaxy_start(N,[0.,0.],[0.,0.],10.)
+galaxy = galaxy_start(N÷2,[0.,0.],[0.1,0.1],10.)
+# galaxy = cloud_start(N,[0.,0.])
+
 
 # display(BHNbody.viewStart(galaxy))
 
@@ -25,4 +27,4 @@ anim_tree = build_animation(gal_hist,plotLimits,plotLimits,24);
 
 println("Animation computed.\nBuilding gif...")
 
-gif(anim_tree, "gifs/galaxy-tree-n$N-t$T-fps$fps.gif", fps=fps);
+gif(anim_tree, "gifs/galaxy-clash-n$N-t$T-fps$fps.gif", fps=fps);
