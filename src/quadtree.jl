@@ -1,19 +1,29 @@
 # using Parameters
 
-Base.@kwdef mutable struct Node2D
-    parent = nothing
-    children = Dict{String,Union{Nothing,Node2D}}([("nw",nothing),
-                                                   ("ne",nothing),
-                                                   ("sw",nothing),
-                                                   ("se",nothing)])
-    stars::Array{Star,1} = []
-    regCenter::Array{Float64,1} = [0.,0.]
-    x_lim::Array{Float64,1} = [0.,0.]
-    y_lim::Array{Float64,1} = [0.,0.]
-    n::Int64 = 0
-    centerOfMass::Array{Float64,1} = [0.,0.]
-    totalMass::Float64 = 0.
+import Base: show
+
+function emptyChildren()
+    Dict([("nw",nothing),("ne",nothing),("sw",nothing),("se",nothing)])
 end
+
+mutable struct Node2D
+    parent::Union{Nothing,Node2D}
+    children::Dict{String,Union{Nothing,Node2D}}
+    stars::Array{Star,1}
+    regCenter::Array{Float64,1}
+    x_lim::Array{Float64,1}
+    y_lim::Array{Float64,1}
+    n::Int64
+    centerOfMass::Array{Float64,1}
+    totalMass::Float64
+    Node2D(parent,children,stars,regCenter,x_lim,y_lim,n,centerOfMass,totalMass) = new(parent,children,stars,regCenter,x_lim,y_lim,n,centerOfMass,totalMass)
+end
+
+show(io::IO, n::Node2D) = println(io, "Node with $(n.n) stars, cM=$(n.centerOfMass) and rC=$(n.regCenter)")
+
+Node2D() = Node2D(nothing,emptyChildren(),[],[0.,0.],[0.,0.],[0.,0.],0,[0.,0.],0.)
+Node2D(parent,center::Vector{Float64},x_lim,y_lim) = Node2D(parent,emptyChildren(),Array{Star}([]),center,x_lim,y_lim,0,[0.,0.],0.)
+Node2D(center::Vector{Float64},n,x_lim,y_lim) = Node2D(nothing,emptyChildren(),[],center,x_lim,y_lim,n,[0.,0.],0.)
 
 function getQuadrant(center::Array{Float64,1},point::Array{Float64,1})
     if point[1] <= center[1]
@@ -34,8 +44,7 @@ end
 function createChild(node::Union{Nothing,Node2D},parent::Node2D,star::Star,
                      center::Array{Float64,1},x_lim::Array{Float64,1},y_lim::Array{Float64,1},level::Int64)
     if isnothing(node)
-        node = Node2D(parent=parent,level=level,
-                              regCenter=center,x_lim=x_lim,y_lim=y_lim)
+        node = Node2D(parent,center,x_lim,y_lim)
         node = updateNode!(node,star)
         return true, node
     else
@@ -56,7 +65,7 @@ end
 
 function createRoot(stars::Array{Star,1},x_lim::Array{Float64,1},y_lim::Array{Float64,1})
     center = [mean(x_lim[1],x_lim[2]), mean(y_lim[1],y_lim[2])]
-    node = Node2D(regCenter=center,n=length(stars),x_lim=x_lim,y_lim=y_lim)
+    node = Node2D(center,length(stars),x_lim,y_lim)
     node.stars = copy(stars)
     cm = [0.,0.]
     tm = 0.
@@ -100,7 +109,7 @@ function buildQTree(root::Union{Nothing,Node2D},stars::Union{Nothing,Array{Star,
         if isnothing(root.children[Q])
 #             println("bottom")
             center, x_lim, y_lim = getCenterLimits(root,Q)
-            root.children[Q] = Node2D(parent=root, regCenter=center,x_lim=x_lim,y_lim=y_lim)
+            root.children[Q] = Node2D(root,center,x_lim,y_lim)
             root.children[Q] = updateNode!(root.children[Q],s)
         else
 #             println("going")
@@ -149,10 +158,13 @@ end
 function forcesVector(root::Node2D, theta::Float64)
     F = zeros(length(root.stars),2)
     # This process could be parallelized
+    max_f = [0.,0.]
     for i in 1:length(root.stars)
         F[i,:] = computeForceTree(root,root.stars[i],theta)
+        max_f = [max(max_f[1],abs(F[i,1])),max(max_f[2],abs(F[i,2]))]
     end
-    return F
+    # println(max_f)
+    return F, max_f
 end
 
 
@@ -169,14 +181,14 @@ function oneStepTree(stars::Array{Star,1},delta::Float64,theta::Float64,spaceSca
 #     println("Building Tree")
     root = buildQTree(nothing,stars,x_lim,y_lim)
 #     println("Computing Forces")
-    F = forcesVector(root,theta)
+    F, f = forcesVector(root,theta)
     new_stars = copy(stars)
 #     println("Moving stars")
     for i in 1:length(stars)
         #TODO: this could be improved exploiting matrix multiplications
-         new_stars[i] = moveStar(F[i,:],stars[i],delta,spaceScale)
+         new_stars[i] = moveStar(F[i,:],stars[i],delta,spaceScale, sun = stars[i].s == [0.,0.] ? true : false)
     end
-    return new_stars
+    return new_stars, f
 end
 
 function simulationTree(stars::Array{Star,1},time::Int64,delta::Float64,theta::Float64,plotStart::Bool)
@@ -189,9 +201,12 @@ function simulationTree(stars::Array{Star,1},time::Int64,delta::Float64,theta::F
     end
     history = [position]
     stars_ = copy(stars)
+    F = []
     println("Beginning BH simulation...")
     for t in tqdm(1:time) 
-        stars_ = oneStepTree(stars_,delta,theta,10^10,1.)
+        # println(typeof(stars_))
+        stars_, f = oneStepTree(stars_,delta,theta,10^10,1.)
+        append!(F,[f])
         if t % (time÷20) == 1
             # println("$t out of $time")
         end
@@ -201,5 +216,10 @@ function simulationTree(stars::Array{Star,1},time::Int64,delta::Float64,theta::F
         end
         append!(history, [position])
     end
+    f_max = [0.,0.]
+    for i in 1:length(F)
+        f_max =[max(f_max[1],F[i][1]),max(f_max[2],F[i][2])]
+    end
+    # println(f_max)
     return history
 end
