@@ -3,14 +3,14 @@
 #     push!(LOAD_PATH,"C:/Users/PietroDomi/OneDrive - Università Commerciale Luigi Bocconi/Documenti/GitHub/barnes-hut-julia")
 # end
 
-using Plots
-using BarnesHut
+# using Plots
+# using BarnesHut
 
 Plots.GRBackend()
 
 println("Starting Earth-Sun simulation")
 
-const T = 24*365
+const T = 24*365*2
 # const plotLimits = nothing
 const plotLimits = [-20.,20.]
 const fps = 60

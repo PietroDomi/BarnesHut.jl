@@ -3,16 +3,16 @@
 #     push!(LOAD_PATH,"C:/Users/PietroDomi/OneDrive - Università Commerciale Luigi Bocconi/Documenti/GitHub/barnes-hut-julia")
 # end
 
-using Plots
+# using Plots
 # using BenchmarkTools
-using BarnesHut
+# using BarnesHut
 
 println("Starting Single Galaxy simulation")
 
 N = 500
-T = 24*30*12
+T = 24*30*4
 # const plotLimits = nothing
-plotLimits = [-20.,40.]
+plotLimits = [-20.,20.]
 fps = 60
 
 galaxy = galaxy_start(N÷2,[0.,0.],[0.1,0.1],10.)
@@ -27,4 +27,4 @@ anim_tree = build_animation(gal_hist,plotLimits,plotLimits,24);
 
 println("Animation computed.\nBuilding gif...")
 
-gif(anim_tree, "gifs/galaxy-clash-n$N-t$T-fps$fps.gif", fps=fps);
+gif(anim_tree, "gifs/galaxy-tree-n$N-t$T-fps$fps.gif", fps=fps);
