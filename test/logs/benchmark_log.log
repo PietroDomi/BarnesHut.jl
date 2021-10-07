@@ -1,0 +1,34 @@
+┌ Info: Creating galaxy
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:13
+┌ Info: Simulating a galaxy with N=10 and T=168
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:15
+┌ Info: Starting brute simualation
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:16
+┌ Info: Brute Simulation in 0.007899201
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:18
+┌ Info: Starting tree simulation with θ=0.5
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:19
+┌ Info: Tree Simulation in 0.039756
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:21
+┌ Info: Starting tree simulation with θ=0.1
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:22
+┌ Info: Tree Simulation in 0.0210161
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:24
+┌ Info: Creating galaxy
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:13
+┌ Info: Simulating a galaxy with N=50 and T=168
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:15
+┌ Info: Starting brute simualation
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:16
+┌ Info: Brute Simulation in 0.195717399
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:18
+┌ Info: Starting tree simulation with θ=0.5
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:19
+┌ Info: Tree Simulation in 0.2605582
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:21
+┌ Info: Starting tree simulation with θ=0.1
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:22
+┌ Info: Tree Simulation in 0.449175199
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:24
+┌ Info: End simulation
+└ @ Main C:\Users\PietroDomi\OneDrive - Università Commerciale Luigi Bocconi\Documenti\GitHub\BarnesHut.jl\test\benchmark.jl:26
