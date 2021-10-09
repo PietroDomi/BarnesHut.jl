@@ -192,20 +192,17 @@ function oneStepTree(stars::Array{Star,1},delta::Float64,theta::Float64,spaceSca
 end
 
 function simulationTree(stars::Array{Star,1},time::Int64,delta::Float64,theta::Float64;plotStart::Bool=false,timing::Bool=false)
-    position = zeros(length(stars),2)
-    for i in 1:length(stars)
-        position[i,:] = stars[i].s
-    end
     if plotStart
         scatter(position[:,1],position[:,2])
     end
-    history = [position]
     stars_ = copy(stars)
-    # F = []
+    history = zeros(time+1,length(stars_),2)
+    for i in 1:length(stars)
+        history[1,i,:] = stars[i].s
+    end
     timing && (bench_time = Float64[])
     println("Beginning BH simulation...")
     for t in tqdm(1:time) 
-        # println(typeof(stars_))
         if timing
             res = @timed oneStepTree(stars_,delta,theta,10^10,1.)
             stars_ = res.value
@@ -213,18 +210,11 @@ function simulationTree(stars::Array{Star,1},time::Int64,delta::Float64,theta::F
         else
             stars_ = oneStepTree(stars_,delta,theta,10^10,1.)
         end
-        # append!(F,[f])
-        position = zeros(length(stars_),2)
         for i in 1:length(stars_)
-            position[i,:] = stars_[i].s
+            history[t+1,i,:] = stars_[i].s
         end
-        append!(history, [position])
     end
-    # f_max = [0.,0.]
-    # for i in 1:length(F)
-    #     f_max =[max(f_max[1],F[i][1]),max(f_max[2],F[i][2])]
-    # end
-    # println(f_max)
+
     if timing
         return history, bench_time
     else

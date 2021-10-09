@@ -82,19 +82,15 @@ function mean(a::Number,b::Number)
     (b+a)/2
 end
 
-function build_animation(history::Array{Array{Float64,2},1},x_lim::Union{Nothing,Array{Float64,1}},y_lim::Union{Nothing,Array{Float64,1}},df::Int64;clash::Bool=false,N::Int=10)
+function build_animation(history::Array{Float64,3},x_lim::Union{Nothing,Array{Float64,1}},y_lim::Union{Nothing,Array{Float64,1}},df::Int64;clash::Bool=false,N::Int64=0)
     println("Building Animation...")
-    T = length(history)
+    T = size(history)[1]
     anim = @animate for t = tqdm(1:df:T)
-        if t % (T÷20) == 1
-            p = t*100 ÷ T
-            # println("$p %")
-        end
         if ! clash
-            scatter(history[t][:,1], history[t][:,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim)
+            scatter(history[t,:,1], history[t,:,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim)
         else
-            scatter(history[t][1:N+2,1], history[t][1:N+2,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim)
-            scatter!(history[t][N+2:end,1], history[t][N+2:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:orange)
+            scatter(history[t,1:N+2,1], history[t,1:N+2,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim)
+            scatter!(history[t,N+2:end,1], history[t,N+2:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:orange)
         end
     end
     println("Done!")

@@ -39,15 +39,14 @@ function onestepBrute(time::Float64,stars::Array{Star,1},spaceScale::Int64)
 end
 
 function simulationBrute(stars::Array{Star,1},time::Int64,delta::Float64;timing::Bool=false)
-    position = zeros(length(stars),2)
-    for i in 1:length(stars)
-        position[i,:] = [stars[i].s[1],stars[i].s[2]]
-    end
-    history = [position]
     stars_ = copy(stars)
+    history = zeros(time+1,length(stars_),2)
+    for i in 1:length(stars)
+        history[1,i,:] = stars[i].s
+    end
     timing && (bench_time = Float64[])
     println("Beginning brute force simulation...")
-    for t in tqdm(1:time) # one month's minutes
+    for t in tqdm(1:time) 
         if timing
             res = @timed onestepBrute(delta,stars_,10^10)
             stars_ = res.value
@@ -55,14 +54,9 @@ function simulationBrute(stars::Array{Star,1},time::Int64,delta::Float64;timing:
         else
             stars_ = onestepBrute(delta,stars_,10^10)
         end
-        # if t % (time÷10) == 1
-        #     # println("$t out of $time")
-        # end
-        position = zeros(length(stars_),2)
         for i in 1:length(stars_)
-            position[i,:] = [stars_[i].s[1],stars_[i].s[2]]
+            history[t+1,i,:] = stars_[i].s
         end
-        append!(history, [position])
     end
     if timing
         return history, bench_time
