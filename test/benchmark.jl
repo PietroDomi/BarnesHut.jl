@@ -5,7 +5,7 @@ using HDF5
 
 timestamp = replace(string(now()), ":" => "-")
 
-io = open("test/logs/benchmark_log_dsba_"*timestamp*".log","w+")
+io = open("test/logs/benchmark_log_dsba_$timestamp.log","w+")
 logger = SimpleLogger(io)
 global_logger(logger)
 
