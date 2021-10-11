@@ -26,7 +26,6 @@ for n in N
 
     @info "Starting brute simualation"
     hist_brute, bench_time_brute = simulationBrute(galaxy,T,3600.;timing=true);
-    # println(typeof(hist_brute))
     mean_time_brute = sum(bench_time_brute)/length(bench_time_brute)
     write(g,"Brute, $T, $n\n")
     write(g,"$(bench_time_brute)\n")
