@@ -13,7 +13,7 @@ f = open("test/data/time/benchmark_time_mean_$timestamp.txt","w")
 g = open("test/data/time/benchmark_time_$timestamp.txt","w")
 write(f,"T,N,Alg,θ,step_time\n")
 
-N = [10,20,40,80,160,320,640,1280,5120,10240]
+N = [10,20,40,80,160,320,640,1280,2560,5120,10240]
 θ = [0.4,0.8,1,1.5,2,5]
 
 T = 24*7
