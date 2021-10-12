@@ -13,8 +13,8 @@ f = open("test/data/time/benchmark_time_mean_$timestamp.txt","w")
 g = open("test/data/time/benchmark_time_$timestamp.txt","w")
 write(f,"T,N,Alg,θ,step_time\n")
 
-N = [10,20,40,80,160,320,640,1280,2560,5120,10240]
-θ = [0.4,0.8,1,1.5,2,5]
+N = 1000 .* [i for i in 1:10]
+θ = [0.4,0.8,1,1.5,2,5,7,10]
 
 T = 24*7
 
@@ -29,7 +29,7 @@ for n in N
     mean_time_brute = sum(bench_time_brute)/length(bench_time_brute)
     write(g,"Brute, $T, $n\n")
     write(g,"$(bench_time_brute)\n")
-    write(f,"$T,$n,BF,_,$(mean_time_brute)\n")
+    write(f,"$T,$n,BF,0.0,$(mean_time_brute)\n")
     @info "Avg step Brute Simulation in $(mean_time_brute)\n"
     h5write("test/data/output/sim-$timestamp.h5","brute-T$T-N$n",hist_brute)
     

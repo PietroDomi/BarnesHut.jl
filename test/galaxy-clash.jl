@@ -2,19 +2,24 @@ using BarnesHut
 
 println("Starting Galaxy clash simulation")
 
-N = 500
+N = 2000
 T = 24*30*12
-# const plotLimits = nothing
-plotLimits = [-20.,40.]
+plotLimits = [-40.,40.]
 animation = true
+cloud = false
 fps = 60
 
-galaxy = galaxy_start(N÷2,[0.,0.],[25.,12.],20.)
-galaxy2 = galaxy_start(N÷2,[20.,20.],[-25.,-12.],20.)
+if ! cloud
+    galaxy = galaxy_start(N÷2,[-20.,-20.],[10000.,8000.],10.)
+    galaxy2 = galaxy_start(N÷2,[20.,20.],[-10000.,-8000.],10.)
+else
+    galaxy = cloud_start(N÷2,[-30.,-30.],[20000.,15000.])
+    galaxy2 = cloud_start(N÷2,[30.,30.],[-20000.,-15000.])
+end
 
 append!(galaxy,galaxy2)
 
-gal_hist = simulationTree(galaxy,T,3600.,1.)
+gal_hist = simulationTree(galaxy,T,3600.,4.0)
 
 if animation
     using Plots
