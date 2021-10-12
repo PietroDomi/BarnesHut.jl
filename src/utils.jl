@@ -52,15 +52,15 @@ function random_start(num_particles::Int64,x_lim::Array{Float64,1},y_lim::Array{
     return stars
 end
 
-function cloud_start(num_particles::Int64, center::Array{Float64,1})
+function cloud_start(num_particles::Int64, center::Array{Float64,1}, c_vel::Array{Float64,1})
     particles = Star[]
     for i = 1:num_particles
         θ = 2π*rand()
-        R = randexp()/ℯ
+        R = randexp()/ℯ * 10.
         z = (rand() > 0.5 ? 1 : -1) * (randexp()/(10ℯ))
         v = √(R*num_particles/1e6)
         mass = 1e4
-        push!(particles, Star(center+[R*cos(θ), R*sin(θ)], [v*sin(θ), -v*cos(θ)], mass))
+        push!(particles, Star(center+[R*cos(θ), R*sin(θ)], [v*sin(θ), -v*cos(θ)] + c_vel, mass))
     end
     particles
 end
@@ -87,10 +87,13 @@ function build_animation(history::Array{Float64,3},x_lim::Union{Nothing,Array{Fl
     T = size(history)[1]
     anim = @animate for t = tqdm(1:df:T)
         if ! clash
-            scatter(history[t,:,1], history[t,:,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim)
+            scatter(history[t,1:end-1,1], history[t,1:end-1,2], title="Time elapsed: $(t÷360) years, $((t÷30)%12) months", legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markersize=3)
+            scatter!(history[t,end:end,1], history[t,end:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markersize=5)
         else
-            scatter(history[t,1:N+2,1], history[t,1:N+2,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim)
-            scatter!(history[t,N+2:end,1], history[t,N+2:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:orange)
+            scatter(history[t,1:N,1], history[t,1:N,2], title="Time elapsed: $(t÷360) years, $((t÷30)%12) months", legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:deepskyblue3, markersize=3)
+            scatter!(history[t,N+1:N+1,1],history[t,N+1:N+1,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:deepskyblue3, markersize=5)
+            scatter!(history[t,N+2:end-1,1], history[t,N+2:end-1,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:orange, markersize=3)
+            scatter!(history[t,end:end,1], history[t,end:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:orange, markersize=5)
         end
     end
     println("Done!")
@@ -140,7 +143,7 @@ function viewStart(stars::Array{Star,1})
     for i in 1:length(stars)
         position[i,:] = stars[i].s
     end
-    scatter(position[:,1],position[:,2],size=[500,500],legend=false)
+    scatter(position[:,1],position[:,2],size=[500,500],legend=false, xlim=x_lim, ylim=y_lim, markersize=5)
 end
 
 function viewStart!(stars::Array{Star,1})
