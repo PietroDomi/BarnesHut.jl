@@ -25,21 +25,27 @@ Node2D() = Node2D(nothing,emptyChildren(),[],[0.,0.],[0.,0.],[0.,0.],0,[0.,0.],0
 Node2D(parent,center::Vector{Float64},x_lim,y_lim) = Node2D(parent,emptyChildren(),Array{Star}([]),center,x_lim,y_lim,0,[0.,0.],0.)
 Node2D(center::Vector{Float64},n,x_lim,y_lim) = Node2D(nothing,emptyChildren(),[],center,x_lim,y_lim,n,[0.,0.],0.)
 
-function getQuadrant(center::Array{Float64,1},point::Array{Float64,1})
-    if point[1] <= center[1]
-        if point[2] <= center[2]
-            return "sw"
-        else
-            return "nw"
-        end
-    else
-        if point[2] > center[2]
-            return "ne"
-        else
-            return "se"
-        end
-    end
+# function getQuadrant(center::Array{Float64,1},point::Array{Float64,1})
+#     if point[1] <= center[1]
+#         if point[2] <= center[2]
+#             return "sw"
+#         else
+#             return "nw"
+#         end
+#     else
+#         if point[2] > center[2]
+#             return "ne"
+#         else
+#             return "se"
+#         end
+#     end
+# end
+
+function getQuadrant(center::Vector{Float64},point::Vector{Float64})
+    return point[1] ≤ center[1] ? (point[2] ≤ center[2] ? "sw" : "nw") :
+                                  (point[2] > center[2] ? "ne" : "se")
 end
+
 
 function createChild(node::Union{Nothing,Node2D},parent::Node2D,star::Star,
                      center::Array{Float64,1},x_lim::Array{Float64,1},y_lim::Array{Float64,1},level::Int64)
@@ -155,21 +161,52 @@ function computeForceTree(node::Node2D,star::Star,theta::Float64)
 end
 
 
-function forcesVector(root::Node2D, theta::Float64)
+# function forcesVector(root::Node2D, theta::Float64)
+#     F = zeros(length(root.stars),2)
+#     # This process could be parallelized
+#     for i in 1:length(root.stars)
+#         F[i,:] = computeForceTree(root,root.stars[i],theta)
+#     end
+#     return F
+# end
+
+function forcesVectorAndUpdate(root::Node2D, theta::Float64,delta::Float64,spaceScale::Int64)
     F = zeros(length(root.stars),2)
-    # This process could be parallelized
-    # max_f = [0.,0.]
+    # IDEA: This process could be parallelized
+    new_stars = copy(root.stars)
     for i in 1:length(root.stars)
         F[i,:] = computeForceTree(root,root.stars[i],theta)
-        # max_f = [max(max_f[1],abs(F[i,1])),max(max_f[2],abs(F[i,2]))]
+        # IDEA: this could be improved exploiting matrix multiplications
+        new_stars[i] = moveStar(F[i,:],root.stars[i],delta,spaceScale)
     end
-    # println(max_f)
-    return F #, max_f
+    return new_stars
 end
 
 
+# function oneStepTree(stars::Array{Star,1},delta::Float64,theta::Float64,spaceScale::Int64,eps::Float64)
+#     # Finding borders
+#     x_lim = [Inf,-Inf]
+#     y_lim = [Inf,-Inf]
+#     for s in stars
+#         x_lim = [min(x_lim[1],s.s[1]),max(x_lim[2],s.s[1])]
+#         y_lim = [min(y_lim[1],s.s[2]),max(y_lim[2],s.s[2])]
+#     end
+#     x_lim = [x_lim[1]-eps,x_lim[2]+eps]
+#     y_lim = [y_lim[1]-eps,y_lim[2]+eps]
+#     # Building Tree
+#     root = buildQTree(nothing,stars,x_lim,y_lim)
+#     # Computing Forces
+#     F = forcesVector(root,theta)
+#     new_stars = copy(stars)
+#     # Moving stars
+#     for i in 1:length(stars)
+#          new_stars[i] = moveStar(F[i,:],stars[i],delta,spaceScale)
+#     end
+#     new_stars
+# end
+
 function oneStepTree(stars::Array{Star,1},delta::Float64,theta::Float64,spaceScale::Int64,eps::Float64)
-#     println("Finding borders")
+    # Finding borders
     x_lim = [Inf,-Inf]
     y_lim = [Inf,-Inf]
     for s in stars
@@ -178,16 +215,10 @@ function oneStepTree(stars::Array{Star,1},delta::Float64,theta::Float64,spaceSca
     end
     x_lim = [x_lim[1]-eps,x_lim[2]+eps]
     y_lim = [y_lim[1]-eps,y_lim[2]+eps]
-#     println("Building Tree")
+    # Building Tree
     root = buildQTree(nothing,stars,x_lim,y_lim)
-#     println("Computing Forces")
-    F = forcesVector(root,theta)
-    new_stars = copy(stars)
-#     println("Moving stars")
-    for i in 1:length(stars)
-        #TODO: this could be improved exploiting matrix multiplications
-         new_stars[i] = moveStar(F[i,:],stars[i],delta,spaceScale)
-    end
+    # Computing Forces & Moving stars
+    new_stars = forcesVectorAndUpdate(root,theta,delta,spaceScale)
     return new_stars
 end
 
