@@ -20,21 +20,26 @@ end
 
 function onestepBrute(time::Float64,stars::Array{Star,1},spaceScale::Int64)
     new_stars = copy(stars)
+    # prepare a NxNx2 tensor for the interactions
+    F_mat = zeros(length(stars),length(stars),2)
     for i in 1:length(stars)
         # compute the net force
-        f_i = [0,0]
-        for j in 1:length(stars)
-            if i != j
+        for j in i:length(stars)
+            # compute force for all pairs not already computed
+            if i != j 
                 F = newton(stars[j],stars[i])
                 d_j = stars[j]-stars[i]
                 cos_0j, sin_0j = get_cos_sin(d_j)
                 f_j = [F * cos_0j, F * sin_0j]
-                f_i += f_j # * 10^9
+                F_mat[i,j,:] = f_j # * 10^9
+                F_mat[j,i,:] = -f_j # * 10^9
             end
         end
         # move the body according to the net force
-        new_stars[i] = moveStar(f_i,stars[i],time,spaceScale)
+        net_force = [sum(F_mat[i,:,1]),sum(F_mat[i,:,2])]
+        new_stars[i] = moveStar(net_force,stars[i],time,spaceScale)
     end
+    # return a list of all stars with updated pos & vel
     return new_stars
 end
 
