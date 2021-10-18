@@ -13,13 +13,12 @@ timestamp = replace(string(now()), ":" => "-")
 # g = open("examples/data/time/benchmark_time_$timestamp.txt","w")
 # write(f,"T,N,Alg,θ,step_time\n")
 
-# N = 1000 .* [i for i in 1:10]
-N = [1000]
-θ = [0.4]#,0.8,1,1.5,2,5,7,10]
+N = 1000 .* [i for i in 1:10]
+θ = [0.4,0.8,1,1.5,2,5,7,10]
 T = 24*7
 
 open("examples/data/time/benchmark_time_$timestamp.txt","w") do g
-    open("examples/data/time/benchmark_time_mean_$timestamp.txt","w") do f
+    open("examples/data/time/benchmark_time_mean_$timestamp.csv","w") do f
         open("examples/logs/benchmark_log_dsba_$timestamp.log","w+") do io
             logger = SimpleLogger(io)
             global_logger(logger)
