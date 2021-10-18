@@ -29,13 +29,8 @@ end
 function newton(a::Star,b::Star;max::Float64=1e18)
     G = 6.674
     r2 = distance2(a,b)
-    # if sqrt(r2) < ϵ
-    #     println("Collapsed!")
-    #     return 0., collapse(a,b)
-    # else
     F = min(G * a.m * b.m / r2, max)  # * 10^9
-    return F # , nothing
-    # end
+    return F 
 end
 
 function get_cos_sin(a::Array)
@@ -45,10 +40,15 @@ function get_cos_sin(a::Array)
 end
 
 function random_start(num_particles::Int64,x_lim::Array{Float64,1},y_lim::Array{Float64,1},vel::Float64)
-    θ = rand()*2*π
-    p = rand()*2-1
     size = [abs(x_lim[1]-x_lim[2]),abs(y_lim[1]-y_lim[2])]
-    stars = [Star([p*size[1]+x_lim[1],p*size[1]+y_lim[1]],[vel*cos(θ),vel*sin(θ)],10^4) for i in 1:num_particles]
+    stars = Star[]
+    for i in 1:num_particles
+        θ = rand()*2*π
+        p1 = rand()*2-1
+        p2 = rand()*2-1
+        star = [Star([p1*size[1]+x_lim[1],p2*size[1]+y_lim[1]],[vel*cos(θ),vel*sin(θ)],10^4)]
+        append!(stars,star)
+    end
     return stars
 end
 
@@ -82,15 +82,17 @@ function mean(a::Number,b::Number)
     (b+a)/2
 end
 
-function build_animation(history::Array{Float64,3},x_lim::Union{Nothing,Array{Float64,1}},y_lim::Union{Nothing,Array{Float64,1}},df::Int64;clash::Bool=false,N::Int64=0)
+function build_animation(history::Array{Float64,3},x_lim::Union{Nothing,Array{Float64,1}},y_lim::Union{Nothing,Array{Float64,1}};df::Int64=1,clash::Bool=false,N::Int64=0,time_unit::String="h")
     println("Building Animation...")
     T = size(history)[1]
+    
     anim = @animate for t = tqdm(1:df:T)
+        title = time_unit == "h" ? "Time elapsed: $(t÷(24*30*12))y $(t÷(24*30)%12)m" : "Time elapsed: $(t÷(30*12))y $(t÷(30)%12)m"
         if ! clash
-            scatter(history[t,1:end-1,1], history[t,1:end-1,2], title="Time elapsed: $(t÷360) years, $((t÷30)%12) months", legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markersize=3)
+            scatter(history[t,1:end-1,1], history[t,1:end-1,2], title=title, legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markersize=3)
             scatter!(history[t,end:end,1], history[t,end:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markersize=5)
         else
-            scatter(history[t,1:N,1], history[t,1:N,2], title="Time elapsed: $(t÷360) years, $((t÷30)%12) months", legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:deepskyblue3, markersize=3)
+            scatter(history[t,1:N,1], history[t,1:N,2], title=title, legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:deepskyblue3, markersize=3)
             scatter!(history[t,N+1:N+1,1],history[t,N+1:N+1,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:deepskyblue3, markersize=5)
             scatter!(history[t,N+2:end-1,1], history[t,N+2:end-1,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:orange, markersize=3)
             scatter!(history[t,end:end,1], history[t,end:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:orange, markersize=5)
@@ -143,7 +145,7 @@ function viewStart(stars::Array{Star,1})
     for i in 1:length(stars)
         position[i,:] = stars[i].s
     end
-    scatter(position[:,1],position[:,2],size=[500,500],legend=false, xlim=x_lim, ylim=y_lim, markersize=5)
+    scatter(position[:,1],position[:,2],size=[500,500],legend=false,markersize=5)
 end
 
 function viewStart!(stars::Array{Star,1})
