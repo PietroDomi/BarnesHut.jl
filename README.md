@@ -1,14 +1,21 @@
-# Barnes Hut Simulation Algorithm
- Implementation of the BarnesHut algorithm in Julia, with benchmark comparisons with the brute force algorithm.
+# BarnesHut.jl
 
- This is a `Julia` project I created for another course, it is my first attempt with the language, so there's a lot of room for improvement.
+ Implementation of the BarnesHut algorithm in Julia for solving the N-body problem, along with benchmark comparisons with the brute force algorithm.
+
+ This is a `Julia` project I created for the course [20602 - Computer Science (Algorithms)](https://didattica.unibocconi.eu/ts/tsn_anteprima.php?cod_ins=20602&anno=2021&IdPag=6164) at UniBocconi.
  
- To know more about the algorithm: [original paper](https://doi.org/10.1038%2F324446a0); [wikipedia](https://en.wikipedia.org/wiki/Barnes–Hut_simulation); [example](https://jheer.github.io/barnes-hut/).
+ To know more about the algorithm: 
+ - [original paper](https://doi.org/10.1038%2F324446a0)
+ - [wikipedia](https://en.wikipedia.org/wiki/Barnes–Hut_simulation)
+ - [example](https://jheer.github.io/barnes-hut/)
 
 ## Repo structure
-You'll find the module and the function under the folder `src/`, while you can use the scripts in `test/` for a quick run.
+The main module and functions are under the folder `src/`.
+
+There are a bunch of scripts ready to run in `examples/`.
 
 ## Quick start
+Clone the repository first, then access the fodler:
 ```
 > cd BarnesHut.jl
 
@@ -17,5 +24,14 @@ You'll find the module and the function under the folder `src/`, while you can u
 # Go to pkg to download necessary packages
 (BarnesHut) pkg> instantiate
 
-julia> include("test/*ANYSCRIPT*.jl")
+# (Optional) Test the package 
+(BarnesHut) pkg> test
 ```
+Next, you can run any of the examples by typing in the REPL
+
+```
+julia> include("examples/YOUREXAMPLE.jl")
+```
+
+## Credits
+Pietro Dominietto (pietro.dominietto@studbocconi.it)
