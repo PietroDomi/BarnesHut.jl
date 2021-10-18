@@ -124,7 +124,8 @@ function view_start(stars::Array{Star,1})
     for i in 1:length(stars)
         position[i,:] = stars[i].s
     end
-    scatter(position[:,1],position[:,2],size=[500,500],legend=false,markersize=5)
+    scatter(position[1:end-1,1],position[1:end-1,2],size=[500,500],legend=false,markersize=3)
+    scatter!(position[end:end,1],position[end:end,2],size=[500,500],legend=false,markersize=5)
 end
 
 function view_start!(stars::Array{Star,1})
