@@ -16,7 +16,10 @@ mutable struct Node2D
     n::Int64
     centerOfMass::Array{Float64,1}
     totalMass::Float64
-    Node2D(parent,children,stars,regCenter,x_lim,y_lim,n,centerOfMass,totalMass) = new(parent,children,stars,regCenter,x_lim,y_lim,n,centerOfMass,totalMass)
+    Node2D(parent,children,stars,regCenter,x_lim,
+            y_lim,n,centerOfMass,totalMass) = 
+        new(parent,children,stars,regCenter,x_lim,
+            y_lim,n,centerOfMass,totalMass)
 end
 
 show(io::IO, n::Node2D) = println(io, "Node with $(n.n) stars, cM=$(n.centerOfMass) and rC=$(n.regCenter)")
@@ -103,31 +106,35 @@ function getCenterLimits(node::Node2D,Q::String)
     return center, x_lim, y_lim
 end
 
-function buildQTree(root::Union{Nothing,Node2D},stars::Union{Nothing,Array{Star,1}},x_lim::Array{Float64,1},y_lim::Array{Float64,1})
-    # regCenter = [mean(x_lim[1],x_lim[2]), mean(y_lim[1],y_lim[2])]
+function buildQTree(root::Union{Nothing,Node2D},stars::Union{Nothing,Array{Star,1}},
+                    x_lim::Array{Float64,1},y_lim::Array{Float64,1})
     if isnothing(root)
         root = createRoot(stars,x_lim,y_lim)        
     end
-#     println(root,stars)
+    # Loop on every star
     for s in stars
-#         println(i)
         Q = getQuadrant(root.regCenter,s.s)
         if isnothing(root.children[Q])
-#             println("bottom")
+            # If the quadrant is still empty, create the node
             center, x_lim, y_lim = getCenterLimits(root,Q)
             root.children[Q] = Node2D(root,center,x_lim,y_lim)
             root.children[Q] = updateNode!(root.children[Q],s)
         else
-#             println("going")
+            # Otherwise add the star to the node
             root.children[Q] = updateNode!(root.children[Q],s)
             if root.children[Q].n == 2
+                # If there was already a star, then we need to go down a level and create other nodes
                 stars_ = root.children[Q].stars
             else
+                # otherwise we just need to sort the new star
                 stars_ = [s]
             end
-            root.children[Q] = buildQTree(root.children[Q], stars_, root.children[Q].x_lim, root.children[Q].y_lim)
+            # Then recursively call the constructor for that node and its corresponding quadrant
+            root.children[Q] = buildQTree(root.children[Q], stars_, 
+                                          root.children[Q].x_lim, root.children[Q].y_lim)
         end
     end
+    # At the end it is enough to return the root, as it contains pointers to all its children
     return root
 end
 
