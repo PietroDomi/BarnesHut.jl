@@ -38,7 +38,7 @@ open("examples/data/time/benchmark_time_$timestamp.txt","w") do g
                 print(g,"$(bench_time_brute)\n")
                 print(f,"$T,$n,BF,0.0,$(mean_time_brute)\n")
                 @info "Avg step Brute Simulation in $(mean_time_brute)\n"
-                h5write("test/data/output/sim-$timestamp.h5","brute-T$T-N$n",hist_brute)
+                h5write("examples/data/output/sim-$timestamp.h5","brute-T$T-N$n",hist_brute)
                 
                 for theta in θ
                     @info "Starting tree simulation with θ=$theta"
@@ -48,7 +48,7 @@ open("examples/data/time/benchmark_time_$timestamp.txt","w") do g
                     print(g,"BH, T=$T, n=$n, θ=$theta\n")
                     print(g,"$(bench_time_tree)\n")
                     @info "Avg step Tree Simulation in $(mean_time_tree)\n"
-                    h5write("test/data/output/sim-$timestamp.h5","barneshut-T$T-N$n-th$theta",hist_tree)
+                    h5write("examples/data/output/sim-$timestamp.h5","barneshut-T$T-N$n-th$theta",hist_tree)
                 end
             end
             @info "End simulation"
