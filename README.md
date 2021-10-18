@@ -2,7 +2,7 @@
 
  Implementation of the BarnesHut algorithm in Julia for solving the N-body problem, along with benchmark comparisons with the brute force algorithm.
 
- This is a `Julia` project I created for the course [20602 - Computer Science (Algorithms)](https://didattica.unibocconi.eu/ts/tsn_anteprima.php?cod_ins=20602&anno=2021&IdPag=6164) at UniBocconi.
+ This is a `Julia` project I created for the course [20602 - Computer Science (Algorithms)](https://didattica.unibocconi.eu/ts/tsn_anteprima.php?cod_ins=20602&anno=2021&IdPag=6164) at UniBocconi, under prof. Feinauer and prof. Pittorino.
  
  To know more about the algorithm: 
  - [original paper](https://doi.org/10.1038%2F324446a0)
