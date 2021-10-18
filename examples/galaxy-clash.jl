@@ -19,7 +19,7 @@ end
 
 append!(galaxy,galaxy2)
 
-gal_hist = simulationTree(galaxy,T,3600.,4.0)
+gal_hist = simulation_tree(galaxy,T,3600.,4.0)
 
 if animation
     using Plots

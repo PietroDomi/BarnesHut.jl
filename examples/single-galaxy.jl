@@ -12,7 +12,7 @@ fps = 60
 galaxy = galaxy_start(N,[0.,0.],[0.0,0.0],20.)
 # galaxy = cloud_start(N,[0.,0.],[0.,0.])
 
-gal_hist = simulationTree(galaxy,T,24*3600.,2.0)
+gal_hist = simulation_tree(galaxy,T,24*3600.,2.0)
 
 if animation
     using Plots

@@ -5,16 +5,11 @@ using HDF5
 
 timestamp = replace(string(now()), ":" => "-")
 
-# io = open("examples/logs/benchmark_log_dsba_$timestamp.log","w+")
-# logger = SimpleLogger(io)
-# global_logger(logger)
-
-# f = open("examples/data/time/benchmark_time_mean_$timestamp.txt","w")
-# g = open("examples/data/time/benchmark_time_$timestamp.txt","w")
-# write(f,"T,N,Alg,θ,step_time\n")
-
+# Simulate for every n in N
 N = 1000 .* [i for i in 1:10]
+# Simulate for every theta in θ
 θ = [0.4,0.8,1,1.5,2,5,7,10]
+# Simulate for 24*7 steps (=24 hrs for 7 days)
 T = 24*7
 
 open("examples/data/time/benchmark_time_$timestamp.txt","w") do g
@@ -31,7 +26,7 @@ open("examples/data/time/benchmark_time_$timestamp.txt","w") do g
                 @info "Simulating a galaxy with N=$n and T=$T\n"
             
                 @info "Starting brute simualation"
-                hist_brute, bench_time_brute = simulationBrute(galaxy,T,3600.;timing=true);
+                hist_brute, bench_time_brute = simulation_brute(galaxy,T,3600.;timing=true);
                 mean_time_brute = sum(bench_time_brute)/length(bench_time_brute)
                 print(g,"Brute, $T, $n\n")
                 print(g,"$(bench_time_brute)\n")
@@ -41,7 +36,7 @@ open("examples/data/time/benchmark_time_$timestamp.txt","w") do g
                 
                 for theta in θ
                     @info "Starting tree simulation with θ=$theta"
-                    hist_tree, bench_time_tree = simulationTree(galaxy,T,3600.,theta;timing=true);
+                    hist_tree, bench_time_tree = simulation_tree(galaxy,T,3600.,theta;timing=true);
                     mean_time_tree = sum(bench_time_tree)/length(bench_time_tree)
                     print(f,"$T,$n,BH,$theta,$(mean_time_tree)\n")
                     print(g,"BH, T=$T, n=$n, θ=$theta\n")
@@ -51,7 +46,6 @@ open("examples/data/time/benchmark_time_$timestamp.txt","w") do g
                 end
             end
             @info "End simulation"
-
         end
     end
 end

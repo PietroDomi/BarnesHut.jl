@@ -1,24 +1,4 @@
-function forceDistanceBrute(stars::Array{Star,1})
-    F = zeros(length(stars),length(stars))
-    d = zeros(length(stars),length(stars),2)
-    k = 1
-    for i in 1:length(stars)
-        for j in 1:k
-            if stars[i]!=stars[j]
-                f_i = newton(stars[i],stars[j])
-                F[i,j] = f_i
-                F[j,i] = f_i
-                d_i = stars[j]-stars[i]
-                d[i,j,1],d[i,j,2] = d_i
-                d[j,i,1],d[j,i,2] = -d_i
-            end
-        end
-        k += 1
-    end
-    return F, d
-end
-
-function onestepBrute(time::Float64,stars::Array{Star,1},spaceScale::Int64)
+function one_step_brute(time::Float64,stars::Array{Star,1},spaceScale::Int64)
     new_stars = copy(stars)
     # prepare a NxNx2 tensor for the interactions
     F_mat = zeros(length(stars),length(stars),2)
@@ -37,13 +17,13 @@ function onestepBrute(time::Float64,stars::Array{Star,1},spaceScale::Int64)
         end
         # move the body according to the net force
         net_force = [sum(F_mat[i,:,1]),sum(F_mat[i,:,2])]
-        new_stars[i] = moveStar(net_force,stars[i],time,spaceScale)
+        new_stars[i] = move_star(net_force,stars[i],time,spaceScale)
     end
     # return a list of all stars with updated pos & vel
     return new_stars
 end
 
-function simulationBrute(stars::Array{Star,1},time::Int64,delta::Float64;timing::Bool=false)
+function simulation_brute(stars::Array{Star,1},time::Int64,delta::Float64;timing::Bool=false)
     stars_ = copy(stars)
     history = zeros(time+1,length(stars_),2)
     for i in 1:length(stars)
@@ -53,11 +33,11 @@ function simulationBrute(stars::Array{Star,1},time::Int64,delta::Float64;timing:
     println("Beginning brute force simulation...")
     for t in tqdm(1:time) 
         if timing
-            res = @timed onestepBrute(delta,stars_,10^10)
+            res = @timed one_step_brute(delta,stars_,10^10)
             stars_ = res.value
             append!(bench_time,[res.time])
         else
-            stars_ = onestepBrute(delta,stars_,10^10)
+            stars_ = one_step_brute(delta,stars_,10^10)
         end
         for i in 1:length(stars_)
             history[t+1,i,:] = stars_[i].s
@@ -69,3 +49,25 @@ function simulationBrute(stars::Array{Star,1},time::Int64,delta::Float64;timing:
         return history
     end
 end
+
+# function force_distance_brute(stars::Array{Star,1})
+#     # THIS FUNCTION IS NOT USED BUT MIGHT COME IN HANDY WHEN
+#     # IMPLEMENTING MAT MUL
+#     F = zeros(length(stars),length(stars))
+#     d = zeros(length(stars),length(stars),2)
+#     k = 1
+#     for i in 1:length(stars)
+#         for j in 1:k
+#             if stars[i]!=stars[j]
+#                 f_i = newton(stars[i],stars[j])
+#                 F[i,j] = f_i
+#                 F[j,i] = f_i
+#                 d_i = stars[j]-stars[i]
+#                 d[i,j,1],d[i,j,2] = d_i
+#                 d[j,i,1],d[j,i,2] = -d_i
+#             end
+#         end
+#         k += 1
+#     end
+#     return F, d
+# end

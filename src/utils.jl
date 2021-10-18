@@ -1,7 +1,4 @@
 import Base.-
-using LinearAlgebra
-using ProgressBars
-using Random
 
 import Plots: scatter, scatter!
 
@@ -102,7 +99,7 @@ function build_animation(history::Array{Float64,3},x_lim::Union{Nothing,Array{Fl
     return anim
 end
 
-function moveStar(force::Array{Float64,1},star::Star,time::Float64,spaceScale::Int64;sun::Bool=false)
+function move_star(force::Array{Float64,1},star::Star,time::Float64,spaceScale::Int64;sun::Bool=false)
     if sun
         return star
     else
@@ -115,32 +112,14 @@ function moveStar(force::Array{Float64,1},star::Star,time::Float64,spaceScale::I
     end
 end
 
-function collapse(star1::Star,star2::Star)
-    if star2.m >= star1.m
-        S = star1.s
-        V = star1.v
-    end
-    S = star1.m >= star2.m ? star1.s : star2.s
-    V = star1.m >= star2.m ? star1.v : star2.v
-    M = star1.m + star2.m
-    Star(S,V,M)
-end
-
-function mergeStarArrays(array1::Array{Star,1},array2::Array{Star,1},addEarthSun::Bool)
-    array = Star[]
-    append!(array,array1)
-    append!(array,array2)
-    array
-end
-
-function addEarthSun(array::Array{Star,1},center::Array{Float64,1})
+function add_earth_sun(array::Array{Star,1},center::Array{Float64,1})
     append!(array,[Star([center[1],center[2]+14.96],[29791.032,0.],5.972*10^4)])
     append!(array,[Star(center,[0.,0.],1.989*10^10)])
     array
 end
 
 
-function viewStart(stars::Array{Star,1})
+function view_start(stars::Array{Star,1})
     position = zeros(length(stars),2)
     for i in 1:length(stars)
         position[i,:] = stars[i].s
@@ -148,10 +127,31 @@ function viewStart(stars::Array{Star,1})
     scatter(position[:,1],position[:,2],size=[500,500],legend=false,markersize=5)
 end
 
-function viewStart!(stars::Array{Star,1})
+function view_start!(stars::Array{Star,1})
     position = zeros(length(stars),2)
     for i in 1:length(stars)
         position[i,:] = stars[i].s
     end
     scatter!(position[:,1],position[:,2],size=[500,500],legend=false)
 end
+
+############################################
+# NOT USED BUT MIGHT COME IN HANDY LATER ON
+
+# function collapse(star1::Star,star2::Star)
+#     if star2.m >= star1.m
+#         S = star1.s
+#         V = star1.v
+#     end
+#     S = star1.m >= star2.m ? star1.s : star2.s
+#     V = star1.m >= star2.m ? star1.v : star2.v
+#     M = star1.m + star2.m
+#     Star(S,V,M)
+# end
+
+# function mergeStarArrays(array1::Array{Star,1},array2::Array{Star,1},addEarthSun::Bool)
+#     array = Star[]
+#     append!(array,array1)
+#     append!(array,array2)
+#     array
+# end
