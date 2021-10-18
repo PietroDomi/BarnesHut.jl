@@ -1,9 +1,5 @@
-using BarnesHut
-using Plots
+include("brute-force-test.jl")
+# include("barnes-hut-test.jl")
+println("Animations tested and available at ./test/test-gifs")
 
-# include("earth-sun-brute.jl");
-# include("single-galaxy.jl");
-# include("galaxy-clash.jl");
-include("benchmark.jl");
-
-println("All test passed!")
+println("All tests passed!")
