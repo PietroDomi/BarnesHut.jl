@@ -79,15 +79,16 @@ function mean(a::Number,b::Number)
     (b+a)/2
 end
 
-function build_animation(history::Array{Float64,3},x_lim::Union{Nothing,Array{Float64,1}},y_lim::Union{Nothing,Array{Float64,1}};df::Int64=1,clash::Bool=false,N::Int64=0,time_unit::String="h")
+function build_animation(history::Array{Float64,3},x_lim::Union{Nothing,Array{Float64,1}},y_lim::Union{Nothing,Array{Float64,1}};
+                        df::Int64=1,clash::Bool=false,N::Int64=0,time_unit::String="h",label = ["earth","sun"])
     println("Building Animation...")
     T = size(history)[1]
     
     anim = @animate for t = tqdm(1:df:T)
         title = time_unit == "h" ? "Time elapsed: $(t÷(24*30*12))y $(t÷(24*30)%12)m" : "Time elapsed: $(t÷(30*12))y $(t÷(30)%12)m"
         if ! clash
-            scatter(history[t,1:end-1,1], history[t,1:end-1,2], title=title, legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markersize=3)
-            scatter!(history[t,end:end,1], history[t,end:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markersize=5)
+            scatter(history[t,1:end-1,1], history[t,1:end-1,2], title=title, legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markersize=5,label=label[1])
+            scatter!(history[t,end:end,1], history[t,end:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markersize=10,label=label[2])
         else
             scatter(history[t,1:N,1], history[t,1:N,2], title=title, legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:deepskyblue3, markersize=3)
             scatter!(history[t,N+1:N+1,1],history[t,N+1:N+1,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:deepskyblue3, markersize=5)
