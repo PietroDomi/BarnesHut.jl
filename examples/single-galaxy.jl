@@ -18,5 +18,5 @@ if animation
     using Plots
     anim_tree = build_animation(gal_hist,plotLimits,plotLimits);
     println("Animation computed.\nBuilding gif...")
-    gif(anim_tree, "test/gifs/galaxy-tree-n$N-t$T-fps$fps.gif", fps=fps÷2);
+    gif(anim_tree, "examples/gifs/galaxy-tree-n$N-t$T-fps$fps.gif", fps=fps÷2);
 end
