@@ -16,6 +16,9 @@ gal_hist = simulation_tree(galaxy,T,24*3600.,2.0)
 
 if animation
     using Plots
+    if ! isdir("examples/gifs")
+        mkdir("examples/gifs")
+    end
     anim_tree = build_animation(gal_hist,plotLimits,plotLimits);
     println("Animation computed.\nBuilding gif...")
     gif(anim_tree, "examples/gifs/galaxy-tree-n$N-t$T-fps$fps.gif", fps=fps÷2);

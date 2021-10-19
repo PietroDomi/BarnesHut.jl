@@ -5,6 +5,16 @@ using HDF5
 
 timestamp = replace(string(now()), ":" => "-")
 
+if ! isdir("examples/data/time")
+    mkdir("examples/data/time")
+end
+if ! isdir("examples/data/output")
+    mkdir("examples/data/output")
+end
+if ! isdir("examples/logs")
+    mkdir("examples/logs")
+end
+
 # Simulate for every n in N
 N = 1000 .* [i for i in 1:10]
 # Simulate for every theta in θ
