@@ -33,5 +33,10 @@ Next, you can run any of the examples by typing in the REPL
 julia> include("examples/YOUREXAMPLE.jl")
 ```
 
+## Simulations
+Galaxy clash
+
+![movie](https://raw.githubusercontent.com/PietroDomi/BarnesHut.jl/main/galaxy-clash.gif)
+
 ## Credits
 Pietro Dominietto (pietro.dominietto@studbocconi.it)
