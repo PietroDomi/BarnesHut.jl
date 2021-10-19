@@ -87,13 +87,13 @@ function build_animation(history::Array{Float64,3},x_lim::Union{Nothing,Array{Fl
     anim = @animate for t = tqdm(1:df:T)
         title = time_unit == "h" ? "Time elapsed: $(t÷(24*30*12))y $(t÷(24*30)%12)m" : "Time elapsed: $(t÷(30*12))y $(t÷(30)%12)m"
         if ! clash
-            scatter(history[t,1:end-1,1], history[t,1:end-1,2], title=title, legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markersize=5,label=label[1])
-            scatter!(history[t,end:end,1], history[t,end:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markersize=10,label=label[2])
+            scatter(history[t,1:end-1,1], history[t,1:end-1,2], title=title, legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markersize=5, label=label[1])
+            scatter!(history[t,end:end,1], history[t,end:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markersize=10, label=label[2])
         else
             scatter(history[t,1:N,1], history[t,1:N,2], title=title, legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:deepskyblue3, markersize=3)
-            scatter!(history[t,N+1:N+1,1],history[t,N+1:N+1,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:deepskyblue3, markersize=5)
             scatter!(history[t,N+2:end-1,1], history[t,N+2:end-1,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:orange, markersize=3)
-            scatter!(history[t,end:end,1], history[t,end:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:orange, markersize=5)
+            scatter!(history[t,N+1:N+1,1],history[t,N+1:N+1,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:deepskyblue3, markersize=7)
+            scatter!(history[t,end:end,1], history[t,end:end,2], legend=false, size=[500,500], xlim=x_lim, ylim=y_lim, markercolor=:orange, markersize=7)
         end
     end
     println("Done!")
