@@ -15,7 +15,7 @@ The main module and functions are under the folder `src/`.
 There are a bunch of scripts ready to run in `examples/`.
 
 ## Quick start
-Clone the repository first, then access the fodler:
+Clone the repository first, then access the folder:
 ```
 > cd BarnesHut.jl
 
